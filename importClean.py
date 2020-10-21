@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
 
+
 def load_data_frame(fileName):
     """Loads dataframe from specified file"""
     try:
-        # file_path = filedialog.askopenfile()
         df = pd.read_csv(fileName)
         add_row_index = []
         for i in range(1, len(df) + 1):
@@ -13,6 +13,7 @@ def load_data_frame(fileName):
     except Exception as e:
         print("File not found")
     return formattingData(df)
+
 
 def formattingData(df):
     """This formats the necessary data"""

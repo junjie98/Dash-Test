@@ -5,9 +5,9 @@ import dash_bootstrap_components as dbc
 import dash_table
 from navbar import Navbar
 from importClean import load_data_frame
-import plotly.express as px
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output, State
+from tommy import *
 
 #  Bootstrap CSS, the Navbar requires it
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -64,6 +64,7 @@ def update_graph(xaxis_name, yaxis_name):
             }
 
 
+#  View all data from CSV
 table_layout = dash_table.DataTable(
     id='table',
     columns=[{"name": i, "id": i} for i in df.columns],
@@ -81,8 +82,108 @@ table_layout = dash_table.DataTable(
             },
             "backgroundColor": "rgba(0,116,217, 0.3)"
         }
-    ]
+    ],
+    css=[{'selector': '.row', 'rule': 'margin: 0'}],
 )
+
+#  Form for HF predictor
+form_layout = dbc.FormGroup(
+    [
+        dbc.Jumbotron(
+            html.H1("Heart Failure Predictor", className="display-3"),
+        ),
+
+        dbc.Label("Enter Your Age", html_for="age", width=3, className="pl-5"),
+        dbc.Col(
+            dbc.Input(
+                type="number",
+                id="age",
+                placeholder="Enter Your Age",
+            ),
+            width=3, className="pl-5",
+        ),
+
+        dbc.Label("Are You an Anaemic Patient?", html_for="anemia", width=3, className="pl-5"),
+        dbc.Col(
+            dcc.Dropdown(
+                id="anemia",
+                options=[
+                    {"label": "Yes", "value": "Yes"},
+                    {"label": "No", "value": "No"}
+                ], placeholder="Are You an Anaemic Patient?", searchable=False
+            ),
+            width=3, className="pl-5",
+        ),
+
+        dbc.Label("Are You a Diabetic Patient?", html_for="diabetes", width=3, className="pl-5"),
+        dbc.Col(
+            dcc.Dropdown(
+                id="diabetes",
+                options=[
+                    {"label": "Yes", "value": "Yes"},
+                    {"label": "No", "value": "No"}
+                ], placeholder="Are You a Diabetic Patient?", searchable=False
+            ),
+            width=3, className="pl-5",
+        ),
+
+        dbc.Label("Do You have High Blood Pressure? (BP130/80 and above)", html_for="highblood", width=3,
+                  className="pl-5"),
+        dbc.Col(
+            dcc.Dropdown(
+                id="highblood",
+                options=[
+                    {"label": "High Blood Pressure Patient", "value": "Yes"},
+                    {"label": "No", "value": "No"}
+                ], placeholder="Are You a High Blood Pressure Patient?", searchable=False
+            ),
+            width=3, className="pl-5",
+        ),
+
+        dbc.Label("Are You a Smoker?", html_for="smoker", width=3, className="pl-5"),
+        dbc.Col(
+            dcc.Dropdown(
+                id="smoker",
+                options=[
+                    {"label": "Smoker", "value": "Yes"},
+                    {"label": "Non-smoker", "value": "No"}
+                ], placeholder="Do You Smoke?", searchable=False
+            ),
+            width=3, className="pl-5",
+        ),
+
+        dbc.Label("Enter Your Gender", html_for="gender", width=3, className="pl-5"),
+        dbc.Col(
+            dcc.Dropdown(
+                id="gender",
+                options=[
+                    {"label": "Male", "value": "Male"},
+                    {"label": "Female", "value": "Female"}
+                ], placeholder="What is Your Gender?", searchable=False
+            ),
+            width=3, className="pb-3 pl-5",
+        ),
+
+        dbc.Col(
+            dbc.Button('Submit', id='submit-val', n_clicks=0, color="primary"),
+            className="pl-5",
+        ),
+        html.Hr(className="my-4"),
+        html.Div(id="testers", className="pl-5")
+    ],
+)
+
+
+@app.callback(
+    Output('testers', 'children'),
+    [Input('submit-val', 'n_clicks')],
+    [State('age', 'value'), State('anemia', 'value'),
+     State('diabetes', 'value'), State('highblood', 'value'),
+     State('smoker', 'value'), State('gender', 'value')],
+    prevent_initial_call=True
+)
+def update_output(n_clicks, input1, input2, input3, input4, input5, input6):
+    print(df)
 
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
@@ -90,8 +191,8 @@ table_layout = dash_table.DataTable(
 def display_page(pathname):
     if pathname == '/viewDataset':
         return table_layout
-    elif pathname == '/viewGraph':
-        return '404'
+    elif pathname == '/predictor':
+        return form_layout
     else:
         return index_page
 

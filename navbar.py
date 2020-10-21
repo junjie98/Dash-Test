@@ -6,11 +6,12 @@ def Navbar():
     navbar = dbc.NavbarSimple(
         children=[
             dbc.NavItem(dbc.NavLink("View Dataset", href="/viewDataset")),
-            #dbc.NavItem(dbc.NavLink("View Graph", href="/viewGraph", external_link=True)),
+            dbc.NavItem(dbc.NavLink("Predictor", href="/predictor")),
         ],
         brand="Home",
         brand_href="/",
         color="dark",
         dark=True,
+        className="pb-1",
     )
     return navbar
