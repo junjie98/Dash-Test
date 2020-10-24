@@ -4,7 +4,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_table
 from navbar import Navbar
-from importClean import load_data_frame
+from importClean import *
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output, State
 from tommy import *
@@ -65,10 +65,11 @@ def update_graph(xaxis_name, yaxis_name):
 
 
 #  View all data from CSV
+dfIndex = addRowIndex(df)
 table_layout = dash_table.DataTable(
     id='table',
-    columns=[{"name": i, "id": i} for i in df.columns],
-    data=df.to_dict("records"),
+    columns=[{"name": i, "id": i} for i in dfIndex.columns],
+    data=dfIndex.to_dict("records"),
     page_action="none",  # Allow all data in one page
     style_cell={'textAlign': 'center'},
     style_cell_conditional=[
@@ -186,15 +187,18 @@ def update_output(n_clicks, input1, input2, input3, input4, input5, input6):
     print(df)
 
 
+#  URL routing callback
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/viewDataset':
+    if pathname == '/viewdataset':
         return table_layout
     elif pathname == '/predictor':
         return form_layout
+    elif pathname == '/piechart':
+        return piechart
     else:
-        return index_page
+        return '404'
 
 
 if __name__ == '__main__':

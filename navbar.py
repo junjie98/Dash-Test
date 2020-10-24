@@ -5,7 +5,8 @@ def Navbar():
     """This is the Navigation Bar"""
     navbar = dbc.NavbarSimple(
         children=[
-            dbc.NavItem(dbc.NavLink("View Dataset", href="/viewDataset")),
+            dbc.NavItem(dbc.NavLink("Pie Chart View", href="/piechart")),
+            dbc.NavItem(dbc.NavLink("View Dataset", href="/viewdataset")),
             dbc.NavItem(dbc.NavLink("Predictor", href="/predictor")),
         ],
         brand="Home",
